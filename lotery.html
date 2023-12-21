@@ -65,6 +65,15 @@
             background-color: #f2f2f2; /* 表頭背景色 */
             text-align: left; /* 表頭文字置左 */
         }
+		
+		#result {
+            border: 2px solid #FFD700; /* 黄色边框 */
+            padding: 10px;
+            border-radius: 5px; /* 圆角边框 */
+            background-color: #FFFFE0; /* 浅黄色背景 */
+            font-size: 18px; /* 字体大小 */
+            text-align: center; /* 文字居中 */
+        }
         /* 你的其餘 CSS 樣式可以放在這裡 */
     </style>
 </head>
@@ -94,7 +103,10 @@
 	
 		<button onclick="submitParticipants()">確定名單(Save List)</button><br><br>
 	
-		<button onclick="startLottery()">開始抽獎(Draw)</button>
+		<button onclick="showGif()">開始抽獎(Draw)</button>
+		<div id="gif" style="display: none;">
+			<img id="drawAnimation" src="" alt="Loading...">
+		</div>
 		<p id="result"></p>
 	
 		<h2>得獎者(Number of Lucky Winners)</h2>
@@ -165,6 +177,23 @@
 
             document.getElementById("result").innerText = `中獎者是：${winners.join(", ")}`;
             document.getElementById("participant").value = participants.join("\n"); // 更新 textarea 顯示
+        }
+		
+		function showGif() {
+			console.log("showGif")
+            // 取得顯示 GIF 的元素
+			const animationOptions = ['draw1.gif', 'draw2.gif'];
+            const randomAnimation = animationOptions[Math.floor(Math.random() * animationOptions.length)];
+            var gifElement = document.getElementById('gif');
+			const drawAnimation = document.getElementById('drawAnimation');
+            drawAnimation.src = randomAnimation;
+            gifElement.style.display = 'block';
+
+            // 設定定時器，3 秒後隱藏 GIF 圖片
+            setTimeout(function() {
+                gifElement.style.display = 'none';
+				startLottery();
+            }, 1500); // 3000 毫秒 = 3 秒
         }
     </script>
 </body>
