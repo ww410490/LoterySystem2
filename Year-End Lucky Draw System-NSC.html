@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>抽獎系統</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .header {
+            height: 120vh; /* 調整標頭的高度，這裡設定為視窗高度的四分之一 */
+            background-image: url('bg1.png'); /* 替換為你的圖片檔名 */
+            background-size: cover;
+            background-position: center top; /* 圖片在區域中的位置，這裡設為置頂置中 */
+            color: white; /* 如果需要，設定文字顏色以符合背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .content {
+            padding: 20px; /* 內容區域的內邊距，避免內容與背景重疊 */
+            text-align: center; /* 將內容置中 */
+            max-width: 800px; /* 如果你希望限制內容的最大寬度，可以調整這個值 */
+            margin: 0 auto; /* 水平置中 */
+        }
+		
+		.logo-left, .logo-right {
+            position: absolute; /* 使用絕對定位 */
+            top: 130%; /* 距離上方 50% 處 */
+            transform: translateY(-50%); /* 調整垂直位置，使圖片垂直置中 */
+			width: 20%;
+        }
+        
+        .logo-left {
+            left: 5%; /* 左邊的圖片 */
+        }
+        
+        .logo-right {
+            right: 5%; /* 右邊的圖片 */
+        }
+		
+		textarea, input[type="number"], input[type="text"] {
+            font-size: 18px; /* 調整input元素的字體大小 */
+        }
+
+        #participant, #result {
+            font-size: 18px; /* 調整待抽獎名單的字體大小 */
+        }
+		
+		#historyTable {
+            margin-top: 20px; /* 距離上方內容的距離，可依需要調整 */
+            border-collapse: collapse; /* 表格邊框合併 */
+            width: 100%; /* 表格寬度 */
+        }
+        
+        #historyTable th, #historyTable td {
+            border: 1px solid #dddddd; /* 設置單元格邊框 */
+            padding: 8px; /* 單元格內間距 */
+        }
+        
+        #historyTable th {
+            background-color: #f2f2f2; /* 表頭背景色 */
+            text-align: left; /* 表頭文字置左 */
+        }
+		
+		#result {
+            border: 2px solid #FFD700; /* 黄色边框 */
+            padding: 10px;
+            border-radius: 5px; /* 圆角边框 */
+            background-color: #FFFFE0; /* 浅黄色背景 */
+            font-size: 18px; /* 字体大小 */
+            text-align: center; /* 文字居中 */
+        }
+        /* 你的其餘 CSS 樣式可以放在這裡 */
+    </style>
+</head>
+<body>
+	<div class="header">
+        <!-- 這裡放置標頭內容，可以放置標題、按鈕等 -->
+    </div>
+    <!-- <h1>汎球生物科技 Eurofins Panlabs</h1> -->
+    <!-- <h1>汎球藥理科技 Pharmacology</h1> -->
+    
+	
+	<div class="content">
+		<img src="logo.png" alt="Logo" class="logo-left"> <!-- 左側的圖片 -->
+        <!-- 這裡放置你的網頁內容 -->
+        <!-- <img src="Eurofins logo.PNG" alt="Logo" class="logo-right"> <!-- 右側的圖片 --> -->
+        <!-- 這裡放置你的網頁內容 -->
+		<h1 id="title"></h1>
+		<label for="participant">待抽獎的名單：</label><br>
+		<textarea id="participant" rows="10" cols="50" placeholder="請輸入待抽獎的名單"></textarea><br><br>
+	
+		<label for="numWinners">幸運兒數量(Lucky Guys)：</label>
+		<input type="number" id="numWinners" min="1" value="1"><br><br>
+		
+		<label for="awardName">獎項名稱：</label>
+		<input type="text" id="awardName" placeholder="輸入獎項名稱"><br><br>
+	
+	
+		<button onclick="submitParticipants()">確定名單(Save List)</button><br><br>
+	
+		<button onclick="showGif()">開始抽獎(Draw)</button>
+		<div id="gif" style="display: none;">
+			<img id="drawAnimation" src="" alt="Loading...">
+		</div>
+		<p id="result"></p>
+	
+		<h2>得獎者(Number of Lucky Winners)</h2>
+		<table id="historyTable" border="1">
+			<tr>
+				<th>獎項</th>
+				<th>中獎者</th>
+			</tr>
+		</table>
+    </div>
+    <script>
+	
+		// 动态获取当前年份
+        const currentYear = new Date().getFullYear();
+        // 更新标题内容
+        document.getElementById("title").textContent = `${currentYear} Year-End Lucky Draw System-NSC`;
+		
+        let participants = [
+            "名字1",
+            "名字2",
+            "名字3",
+            "名字4",
+            "名字5",
+            "名字6",
+            "名字7",
+            "名字8",
+            "名字9",
+            "名字10",
+            // 在這裡可以添加更多的預設名單，每個名字用換行分隔
+        ];
+
+        // 在頁面載入時，將預設名單顯示在 textarea 中
+        window.onload = function() {
+            document.getElementById("participant").value = participants.join("\n");
+        };
+
+        function submitParticipants() {
+            const participantInput = document.getElementById("participant").value;
+            participants = participantInput.split(/[\n]+/).map(name => name.trim());
+            console.log(participants); // 可以將名單顯示在控制台檢查是否正確存儲
+        }
+
+        function startLottery() {
+            const numWinners = parseInt(document.getElementById("numWinners").value);
+			const awardName = document.getElementById("awardName").value;
+			
+            if (participants.length === 0) {
+                alert("請先輸入待抽獎的名單！");
+                return;
+            }
+
+            if (numWinners > participants.length) {
+                alert("要抽出的人數超過名單上的人數！");
+                return;
+            }
+
+            const winners = [];
+            while (winners.length < numWinners) {
+                const randomIndex = Math.floor(Math.random() * participants.length);
+                const winner = participants[randomIndex];
+                if (!winners.includes(winner)) {
+                    winners.push(winner);
+                    participants.splice(randomIndex, 1); // 從名單中刪除已中獎者
+                }
+            }
+
+            const currentDate = new Date().toLocaleDateString();
+            const historyTable = document.getElementById("historyTable");
+            const newRow = historyTable.insertRow(-1);
+            const awardCell = newRow.insertCell(0);
+            const winnersCell = newRow.insertCell(1);
+            awardCell.textContent = awardName;
+            winnersCell.textContent = winners.join(", ");
+
+            document.getElementById("result").innerText = `中獎者是：${winners.join(", ")}`;
+            document.getElementById("participant").value = participants.join("\n"); // 更新 textarea 顯示
+        }
+		
+		function showGif() {
+			console.log("showGif")
+            // 取得顯示 GIF 的元素
+			const animationOptions = ['draw1.gif', 'draw2.gif'];
+            const randomAnimation = animationOptions[Math.floor(Math.random() * animationOptions.length)];
+            var gifElement = document.getElementById('gif');
+			const drawAnimation = document.getElementById('drawAnimation');
+            drawAnimation.src = randomAnimation;
+            gifElement.style.display = 'block';
+
+            // 設定定時器，3 秒後隱藏 GIF 圖片
+            setTimeout(function() {
+                gifElement.style.display = 'none';
+				startLottery();
+            }, 1500); // 3000 毫秒 = 3 秒
+        }
+    </script>
+</body>
+</html>

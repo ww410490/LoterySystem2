@@ -86,12 +86,12 @@
     
 	
 	<div class="content">
-		<img src="Eurofins logo.PNG" alt="Logo" class="logo-left"> <!-- 左側的圖片 -->
+		<img src="logo.png" alt="Logo" class="logo-left"> <!-- 左側的圖片 -->
         <!-- 這裡放置你的網頁內容 -->
-        <img src="Eurofins logo.PNG" alt="Logo" class="logo-right"> <!-- 右側的圖片 -->
+        <!-- <img src="Eurofins logo.PNG" alt="Logo" class="logo-right"> <!-- 右側的圖片 --> -->
         <!-- 這裡放置你的網頁內容 -->
-		<h1>2023 Year-End Lucky Draw System</h1>
-		<label for="participant">待抽獎的名單(2023 Year-End Lucky Draw System)：</label><br>
+		<h1 id="title"></h1>
+		<label for="participant">待抽獎的名單：</label><br>
 		<textarea id="participant" rows="10" cols="50" placeholder="請輸入待抽獎的名單"></textarea><br><br>
 	
 		<label for="numWinners">幸運兒數量(Lucky Guys)：</label>
@@ -118,6 +118,12 @@
 		</table>
     </div>
     <script>
+	
+		// 动态获取当前年份
+        const currentYear = new Date().getFullYear();
+        // 更新标题内容
+        document.getElementById("title").textContent = `${currentYear} Year-End Lucky Draw System-汎球`;
+		
         let participants = [
             "名字1",
             "名字2",
